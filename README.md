@@ -39,7 +39,7 @@ Para tolerar la falta de conexión, cada pantalla que consulta datos remotos gua
 
 ### Backend
 
-La app consume una API REST propia, servida en `http://10.0.2.2:8080` (la IP con la que el emulador de Android accede al `localhost` de la máquina anfitriona), con los siguientes endpoints:
+La app consume una API REST en `http://10.0.2.2:8080` (la IP con la que el emulador de Android accede al `localhost` de la máquina anfitriona), con los siguientes endpoints:
 
 | Método | Endpoint | Descripción |
 |---|---|---|
@@ -50,13 +50,26 @@ La app consume una API REST propia, servida en `http://10.0.2.2:8080` (la IP con
 | GET | `/genres` | Lista los géneros disponibles |
 | GET | `/actors` | Lista los actores disponibles |
 
-> Este repositorio contiene únicamente el cliente Android. Es necesario tener el servidor backend corriendo en el puerto `8080` para que la app funcione con datos reales; sin conexión, se apoya en la caché local si ya se cargaron datos previamente.
+Este repositorio contiene únicamente el cliente Android. Para probar la app con datos reales, es necesario levantar el servicio `movies-service` (proporcionado como imagen Docker para la asignatura) en el puerto `8080`:
+
+```bash
+docker pull anselm82/movies-service:latest
+docker run -d --name movies-service -p 8080:8080 anselm82/movies-service:latest
+```
+
+Una vez levantado, la documentación interactiva de la API (Swagger) está disponible en:
+```
+http://localhost:8080/swagger-ui/index.html
+```
+
+Sin este backend corriendo, la app se apoya en la caché local (`SharedPreferences`) si ya se cargaron datos previamente en una sesión anterior.
 
 ## Requisitos
 
 - Android Studio (Ladybug o superior recomendado).
 - SDK de Android: mínimo API 26, compilado con API 36.
 - JDK 11.
+- Docker (para levantar el backend `movies-service`).
 - Una API key gratuita de [TMDB](https://www.themoviedb.org/settings/api) para la carga de carátulas.
 
 ## Configuración
@@ -77,7 +90,7 @@ companion object {
 
 1. Abre la carpeta del proyecto en Android Studio.
 2. Añade tu API key de TMDB como se indica arriba.
-3. Levanta el backend en `localhost:8080` (necesario para cargar y guardar películas reales).
+3. Levanta el backend con `docker run -d --name movies-service -p 8080:8080 anselm82/movies-service:latest` (necesario para cargar y guardar películas reales).
 4. Ejecuta la app sobre un emulador o dispositivo físico (`Run ▶` en Android Studio).
 
 ## Dependencias principales
